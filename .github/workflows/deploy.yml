@@ -8,6 +8,13 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      SERVER_HOST: ${{ secrets.SERVER_HOST }}
+      SERVER_USER: ${{ secrets.SERVER_USER }}
+      SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+      SERVER_PORT: ${{ secrets.SERVER_PORT }}
+      SERVER_UPLOAD_DIR: ${{ secrets.SERVER_UPLOAD_DIR }}
+      SERVER_DEPLOY_SCRIPT: ${{ secrets.SERVER_DEPLOY_SCRIPT }}
 
     steps:
       - name: Checkout
@@ -29,23 +36,25 @@ jobs:
         run: tar -czf tinadec-blog-dist.tar.gz -C dist .
 
       - name: Upload build output
+        if: ${{ env.SERVER_HOST != '' && env.SERVER_USER != '' && env.SERVER_PASSWORD != '' && env.SERVER_PORT != '' && env.SERVER_UPLOAD_DIR != '' }}
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          password: ${{ secrets.SERVER_PASSWORD }}
-          port: ${{ secrets.SERVER_PORT }}
+          host: ${{ env.SERVER_HOST }}
+          username: ${{ env.SERVER_USER }}
+          password: ${{ env.SERVER_PASSWORD }}
+          port: ${{ env.SERVER_PORT }}
           source: tinadec-blog-dist.tar.gz
-          target: ${{ secrets.SERVER_UPLOAD_DIR }}
+          target: ${{ env.SERVER_UPLOAD_DIR }}
           overwrite: true
 
       - name: Run server deploy script
+        if: ${{ env.SERVER_HOST != '' && env.SERVER_USER != '' && env.SERVER_PASSWORD != '' && env.SERVER_PORT != '' && env.SERVER_UPLOAD_DIR != '' && env.SERVER_DEPLOY_SCRIPT != '' }}
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          password: ${{ secrets.SERVER_PASSWORD }}
-          port: ${{ secrets.SERVER_PORT }}
+          host: ${{ env.SERVER_HOST }}
+          username: ${{ env.SERVER_USER }}
+          password: ${{ env.SERVER_PASSWORD }}
+          port: ${{ env.SERVER_PORT }}
           script: |
             set -e
-            sh "${{ secrets.SERVER_DEPLOY_SCRIPT }}" "${{ secrets.SERVER_UPLOAD_DIR }}/tinadec-blog-dist.tar.gz"
+            sh "$SERVER_DEPLOY_SCRIPT" "$SERVER_UPLOAD_DIR/tinadec-blog-dist.tar.gz"
