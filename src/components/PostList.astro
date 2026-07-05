@@ -1,0 +1,35 @@
+---
+import { formatDate, readingTime, type BlogPost } from '@/utils/posts';
+
+interface Props {
+  posts: BlogPost[];
+}
+
+const { posts } = Astro.props;
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+---
+
+<div class="rows">
+  {posts.map((post) => (
+    <a
+      class="row"
+      href={`${base}${post.id}/`}
+      data-row
+      data-category={post.data.category ?? ''}
+      data-title={post.data.title.toLowerCase()}
+    >
+      <span class="row__meta">
+        <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+        {post.data.category && (
+          <>
+            <span class="dot">·</span>
+            <span>{post.data.category}</span>
+          </>
+        )}
+      </span>
+      <span class="row__title">{post.data.title}</span>
+      <span class="row__author">{post.data.author ?? '匿名'}</span>
+      <span class="row__time">{readingTime(post.body)} 分钟阅读</span>
+    </a>
+  ))}
+</div>

@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.astro/
+.codegraph/
+.omo/
+.env
+.env.*
+!.env.example
+.DS_Store
+*.tar.gz

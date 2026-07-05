@@ -1,0 +1,40 @@
+---
+import Thumbnail from './Thumbnail.astro';
+import { formatDate, initials, readingTime, type BlogPost } from '@/utils/posts';
+
+interface Props {
+  post: BlogPost;
+  large?: boolean;
+}
+
+const { post, large = false } = Astro.props;
+const { title, description, pubDate, author, category, cover } = post.data;
+const minutes = readingTime(post.body);
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const href = `${base}${post.id}/`;
+---
+
+<article class:list={['card', large ? 'card--lg' : 'card--sm']}>
+  <a class="card__media" href={href} aria-label={title}>
+    <Thumbnail seed={post.id} cover={cover} label={category} size={large ? 'lg' : 'sm'} />
+  </a>
+  <div class="card__body">
+    <p class="meta">
+      <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+      {category && (
+        <>
+          <span class="dot">·</span>
+          <span>{category}</span>
+        </>
+      )}
+    </p>
+    <h3 class="card__title"><a href={href}>{title}</a></h3>
+    <p class="card__desc">{description}</p>
+    <div class="byline">
+      <span class="avatar" aria-hidden="true">{initials(author ?? '匿')}</span>
+      <span class="byline__name">{author ?? '匿名'}</span>
+      <span class="dot">·</span>
+      <span>{minutes} 分钟阅读</span>
+    </div>
+  </div>
+</article>

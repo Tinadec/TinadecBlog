@@ -1,0 +1,90 @@
+---
+import '../styles/global.css';
+import { SITE } from '@/utils/posts';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = SITE.title, description = SITE.description } = Astro.props;
+const pageTitle = title === SITE.title ? title : `${title} · ${SITE.title}`;
+const year = new Date().getFullYear();
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const href = (path: string) => `${base}${path.replace(/^\/+/, '')}`;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href={href('/favicon.svg')} />
+    <link rel="alternate" type="application/rss+xml" title={SITE.title} href={href('/rss.xml')} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap site-header__inner">
+        <a class="brand" href={base}>
+          <span class="brand__mark" aria-hidden="true"></span>
+          <span>{SITE.title}</span>
+        </a>
+        <nav class="nav" aria-label="主导航">
+          <a href={base}>文章</a>
+          <a href={href('/tags/')}>标签</a>
+          <a href={href('/about/')}>关于</a>
+        </nav>
+        <div class="site-header__actions">
+          <a class="link" href={href('/rss.xml')}>RSS</a>
+          <a class="btn btn--primary" href={base}>开始阅读</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap site-footer__inner">
+        <div class="site-footer__brand">
+          <a class="brand" href={base}>
+            <span class="brand__mark" aria-hidden="true"></span>
+            <span>{SITE.title}</span>
+          </a>
+          <p>{SITE.description}</p>
+        </div>
+        <div class="site-footer__cols">
+          <div>
+            <h4>导航</h4>
+            <a href={base}>文章</a>
+            <a href={href('/tags/')}>标签</a>
+            <a href={href('/about/')}>关于</a>
+          </div>
+          <div>
+            <h4>订阅</h4>
+            <a href={href('/rss.xml')}>RSS</a>
+            <a href={href('/sitemap-index.xml')}>站点地图</a>
+          </div>
+          <div>
+            <h4>说明</h4>
+            <span class="muted">主题布局参考 Cursor 博客</span>
+            <span class="muted">仅用于学习参考</span>
+          </div>
+        </div>
+      </div>
+      <div class="wrap site-footer__bar">
+        <span>© {year} {SITE.title}</span>
+        <span>Powered by Astro</span>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,28 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PostList from '@/components/PostList.astro';
+import { getAllTags, getPublishedPosts, slugifyTag } from '@/utils/posts';
+
+export async function getStaticPaths() {
+  const tags = await getAllTags();
+  return tags.map((tag) => ({
+    params: { tag: slugifyTag(tag.name) },
+    props: { tag: tag.name },
+  }));
+}
+
+const { tag } = Astro.props;
+const posts = (await getPublishedPosts()).filter((post) =>
+  post.data.tags.some((item) => slugifyTag(item) === slugifyTag(tag)),
+);
+---
+
+<BaseLayout title={`标签：${tag}`} description={`标签 ${tag} 下的文章`}>
+  <section class="page-head">
+    <p class="eyebrow">Tag</p>
+    <h1>#{tag}</h1>
+    <p class="muted">共 {posts.length} 篇文章。</p>
+  </section>
+
+  <PostList posts={posts} />
+</BaseLayout>

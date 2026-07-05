@@ -1,0 +1,18 @@
+---
+import { gradientFor } from '@/utils/posts';
+
+interface Props {
+  seed: string;
+  cover?: string;
+  label?: string;
+  size?: 'lg' | 'sm';
+}
+
+const { seed, cover, label, size = 'lg' } = Astro.props;
+const style = cover ? undefined : `background:${gradientFor(seed)}`;
+---
+
+<div class:list={['thumb', `thumb--${size}`]} style={style}>
+  {cover && <img src={cover} alt="" loading="lazy" />}
+  {label && <span class="thumb__label">{label}</span>}
+</div>

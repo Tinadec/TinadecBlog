@@ -1,0 +1,80 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { formatDate, initials } from '@/utils/posts';
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  tags?: string[];
+  category?: string;
+  author?: string;
+  minutesRead?: number;
+}
+
+const {
+  title,
+  description,
+  pubDate,
+  updatedDate,
+  tags = [],
+  category,
+  author = '匿名',
+  minutesRead,
+} = Astro.props;
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const href = (path: string) => `${base}${path.replace(/^\/+/, '')}`;
+---
+
+<BaseLayout title={title} description={description}>
+  <article class="post">
+    <a class="post__back" href={base}>← 返回文章</a>
+
+    <header class="post__head">
+      <p class="meta">
+        <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+        {category && (
+          <>
+            <span class="dot">·</span>
+            <span>{category}</span>
+          </>
+        )}
+        {minutesRead && (
+          <>
+            <span class="dot">·</span>
+            <span>{minutesRead} 分钟阅读</span>
+          </>
+        )}
+      </p>
+
+      <h1>{title}</h1>
+      <p class="post__desc">{description}</p>
+
+      <div class="byline">
+        <span class="avatar" aria-hidden="true">{initials(author)}</span>
+        <span class="byline__name">{author}</span>
+        {updatedDate && (
+          <>
+            <span class="dot">·</span>
+            <span>更新于 {formatDate(updatedDate)}</span>
+          </>
+        )}
+      </div>
+    </header>
+
+    <div class="prose">
+      <slot />
+    </div>
+
+    {tags.length > 0 && (
+      <footer class="post__tags">
+        <ul class="tag-list">
+          {tags.map((tag) => (
+            <li><a href={href(`/tags/${tag.toLowerCase()}/`)}>#{tag}</a></li>
+          ))}
+        </ul>
+      </footer>
+    )}
+  </article>
+</BaseLayout>

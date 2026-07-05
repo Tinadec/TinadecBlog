@@ -1,0 +1,17 @@
+---
+// 占位案例卡片，名称均为虚构示例，换成你自己的内容即可。
+const cases = ['Acme', 'Globex', 'Umbra', 'Northwind'];
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+---
+
+<section class="cases">
+  <div class="cases__head">
+    <h2>精选案例</h2>
+    <a href={base}>查看更多 →</a>
+  </div>
+  <div class="cases__grid">
+    {cases.map((name) => (
+      <div class="case">{name}</div>
+    ))}
+  </div>
+</section>

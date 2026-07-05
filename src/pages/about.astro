@@ -1,0 +1,28 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { SITE } from '@/utils/posts';
+---
+
+<BaseLayout title="关于" description="关于这个博客">
+  <section class="page-head">
+    <p class="eyebrow">About</p>
+    <h1>关于</h1>
+    <p class="muted">关于这个博客与主题。</p>
+  </section>
+
+  <div class="prose">
+    <p>
+      这是一个基于 Astro 的个人博客。当前主题的排版与布局参考了 Cursor 博客的结构（吸顶导航、首屏精选卡片、带缩略图的文章列表、订阅栏与多列页脚），
+      <strong>仅用于个人学习参考，不用于商业用途</strong>，也未使用其商标、字体或图片素材。
+    </p>
+    <p>
+      想做成你自己的主题，主要改这几处：
+    </p>
+    <ul>
+      <li><code>src/styles/global.css</code>：配色、字体与所有视觉变量</li>
+      <li><code>src/layouts/</code>：整站外壳与文章页布局</li>
+      <li><code>src/components/</code>：卡片、列表行、缩略图、订阅栏等组件</li>
+    </ul>
+    <p>站点信息（标题、描述、作者）集中在 <code>src/utils/posts.ts</code> 的 <code>SITE</code> 里。</p>
+  </div>
+</BaseLayout>

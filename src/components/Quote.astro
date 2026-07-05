@@ -1,0 +1,21 @@
+---
+interface Props {
+  text?: string;
+  source?: string;
+  href?: string;
+}
+
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const {
+  text = '好的工具应该消失在工作流里，让你只专注在真正想解决的问题上。',
+  source = '本站编辑手记',
+  href = `${base}about/`,
+} = Astro.props;
+---
+
+<section class="quote">
+  <blockquote>“{text}”</blockquote>
+  <p class="quote__src">
+    来自《{source}》 · <a href={href}>阅读全文 →</a>
+  </p>
+</section>

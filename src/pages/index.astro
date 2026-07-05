@@ -1,0 +1,80 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PostCard from '@/components/PostCard.astro';
+import PostList from '@/components/PostList.astro';
+import Newsletter from '@/components/Newsletter.astro';
+import Quote from '@/components/Quote.astro';
+import Cases from '@/components/Cases.astro';
+import { getSortedPosts } from '@/utils/posts';
+
+const { posts, featured } = await getSortedPosts();
+
+// 首屏：优先精选，不足则用最新补足到 3 篇（1 大 + 2 小）。
+const heroPosts = (featured.length ? featured : posts).slice(0, 3);
+const [heroMain, ...heroSide] = heroPosts;
+
+// 列表展示全部文章（含精选）。
+const categories = [...new Set(posts.map((p) => p.data.category).filter(Boolean))] as string[];
+---
+
+<BaseLayout>
+  {heroMain && (
+    <section class="featured">
+      <PostCard post={heroMain} large />
+      <div class="featured__side">
+        {heroSide.map((post) => <PostCard post={post} />)}
+      </div>
+    </section>
+  )}
+
+  <Newsletter />
+
+  <div class="filterbar">
+    <div class="tabs">
+      <button class="tab is-active" data-tab="all">所有</button>
+      {categories.map((cat) => <button class="tab" data-tab={cat}>{cat}</button>)}
+    </div>
+    <input class="search" type="search" placeholder="搜索文章…" aria-label="搜索文章" data-search />
+  </div>
+
+  <PostList posts={posts} />
+
+  <Quote />
+
+  <Cases />
+</BaseLayout>
+
+<script is:inline>
+  (() => {
+    const tabs = document.querySelectorAll('[data-tab]');
+    const rows = document.querySelectorAll('[data-row]');
+    const search = document.querySelector('[data-search]');
+    let activeCat = 'all';
+    let query = '';
+
+    function apply() {
+      rows.forEach((row) => {
+        const cat = row.getAttribute('data-category') || '';
+        const title = row.getAttribute('data-title') || '';
+        const matchCat = activeCat === 'all' || cat === activeCat;
+        const matchQuery = !query || title.includes(query);
+        row.style.display = matchCat && matchQuery ? '' : 'none';
+      });
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        activeCat = tab.getAttribute('data-tab') || 'all';
+        tabs.forEach((t) => t.classList.toggle('is-active', t === tab));
+        apply();
+      });
+    });
+
+    if (search) {
+      search.addEventListener('input', () => {
+        query = search.value.trim().toLowerCase();
+        apply();
+      });
+    }
+  })();
+</script>

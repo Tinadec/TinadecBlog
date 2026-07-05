@@ -1,0 +1,22 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = '订阅更新',
+  description = '新文章发布时第一时间收到通知。',
+} = Astro.props;
+---
+
+<section class="newsletter">
+  <div class="newsletter__text">
+    <h2>{title}</h2>
+    <p>{description}</p>
+  </div>
+  <form class="newsletter__form" onsubmit="return false">
+    <input type="email" placeholder="you@example.com" aria-label="邮箱地址" />
+    <button type="submit">订阅</button>
+  </form>
+</section>

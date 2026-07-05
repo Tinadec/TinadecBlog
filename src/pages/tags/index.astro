@@ -1,0 +1,26 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getAllTags, slugifyTag } from '@/utils/posts';
+
+const tags = await getAllTags();
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+---
+
+<BaseLayout title="标签" description="按标签浏览文章">
+  <section class="page-head">
+    <p class="eyebrow">Tags</p>
+    <h1>标签</h1>
+    <p class="muted">按主题浏览文章。</p>
+  </section>
+
+  <ul class="tag-cloud">
+    {tags.map((tag) => (
+      <li>
+        <a href={`${base}tags/${slugifyTag(tag.name)}/`}>
+          <span>#{tag.name}</span>
+          <span class="tag-cloud__count">{tag.count}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</BaseLayout>
