@@ -15,6 +15,7 @@ jobs:
       SERVER_PORT: ${{ secrets.SERVER_PORT }}
       SERVER_UPLOAD_DIR: ${{ secrets.SERVER_UPLOAD_DIR }}
       SERVER_DEPLOY_SCRIPT: ${{ secrets.SERVER_DEPLOY_SCRIPT }}
+      SERVER_WEB_ROOT: /opt/1panel/www/sites/Tinadec.lincube.top/index/blog
 
     steps:
       - name: Checkout
@@ -35,6 +36,43 @@ jobs:
       - name: Pack build output
         run: tar -czf tinadec-blog-dist.tar.gz -C dist .
 
+      - name: Prepare server deploy script
+        if: ${{ env.SERVER_HOST != '' && env.SERVER_USER != '' && env.SERVER_PASSWORD != '' && env.SERVER_PORT != '' && env.SERVER_UPLOAD_DIR != '' && env.SERVER_DEPLOY_SCRIPT != '' }}
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          SERVER_UPLOAD_DIR: ${{ env.SERVER_UPLOAD_DIR }}
+          SERVER_DEPLOY_SCRIPT: ${{ env.SERVER_DEPLOY_SCRIPT }}
+          SERVER_WEB_ROOT: ${{ env.SERVER_WEB_ROOT }}
+        with:
+          host: ${{ env.SERVER_HOST }}
+          username: ${{ env.SERVER_USER }}
+          password: ${{ env.SERVER_PASSWORD }}
+          port: ${{ env.SERVER_PORT }}
+          envs: SERVER_UPLOAD_DIR,SERVER_DEPLOY_SCRIPT,SERVER_WEB_ROOT
+          script: |
+            set -e
+            mkdir -p "$SERVER_UPLOAD_DIR" "$(dirname "$SERVER_DEPLOY_SCRIPT")" "$SERVER_WEB_ROOT"
+            cat > "$SERVER_DEPLOY_SCRIPT" <<'SH'
+            #!/usr/bin/env bash
+            set -e
+
+            ARCHIVE="$1"
+            WEB_ROOT="/opt/1panel/www/sites/Tinadec.lincube.top/index/blog"
+            TMP_DIR="$(mktemp -d)"
+
+            trap 'rm -rf "$TMP_DIR"' EXIT
+
+            tar -xzf "$ARCHIVE" -C "$TMP_DIR"
+
+            if command -v rsync >/dev/null 2>&1; then
+              rsync -a --delete "$TMP_DIR"/ "$WEB_ROOT"/
+            else
+              find "$WEB_ROOT" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+              cp -a "$TMP_DIR"/. "$WEB_ROOT"/
+            fi
+            SH
+            chmod +x "$SERVER_DEPLOY_SCRIPT"
+
       - name: Upload build output
         if: ${{ env.SERVER_HOST != '' && env.SERVER_USER != '' && env.SERVER_PASSWORD != '' && env.SERVER_PORT != '' && env.SERVER_UPLOAD_DIR != '' }}
         uses: appleboy/scp-action@v0.1.7
@@ -50,11 +88,15 @@ jobs:
       - name: Run server deploy script
         if: ${{ env.SERVER_HOST != '' && env.SERVER_USER != '' && env.SERVER_PASSWORD != '' && env.SERVER_PORT != '' && env.SERVER_UPLOAD_DIR != '' && env.SERVER_DEPLOY_SCRIPT != '' }}
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          SERVER_UPLOAD_DIR: ${{ env.SERVER_UPLOAD_DIR }}
+          SERVER_DEPLOY_SCRIPT: ${{ env.SERVER_DEPLOY_SCRIPT }}
         with:
           host: ${{ env.SERVER_HOST }}
           username: ${{ env.SERVER_USER }}
           password: ${{ env.SERVER_PASSWORD }}
           port: ${{ env.SERVER_PORT }}
+          envs: SERVER_UPLOAD_DIR,SERVER_DEPLOY_SCRIPT
           script: |
             set -e
             sh "$SERVER_DEPLOY_SCRIPT" "$SERVER_UPLOAD_DIR/tinadec-blog-dist.tar.gz"
