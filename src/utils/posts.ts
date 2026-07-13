@@ -3,9 +3,9 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 export type BlogPost = CollectionEntry<'blog'>;
 
 export const SITE = {
-  title: '我的博客',
-  description: '一个基于 Astro 的个人博客，主题参考 Cursor 博客布局，仅用于学习。',
-  author: '匿名',
+  title: 'Tinadec',
+  description: 'Agent research team. 智能体研究团队。',
+  author: 'Tinadec',
 };
 
 export async function getPublishedPosts() {

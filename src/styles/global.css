@@ -100,16 +100,17 @@ img {
   display: inline-flex;
   align-items: center;
   gap: 9px;
+  min-width: 0;
   font-weight: 600;
   font-size: 0.98rem;
   letter-spacing: 0.02em;
 }
 
 .brand__mark {
-  width: 18px;
+  flex: 0 0 auto;
+  width: 23px;
   height: 18px;
-  border-radius: 5px;
-  background: var(--accent);
+  color: var(--accent);
 }
 
 .nav {
@@ -823,20 +824,95 @@ h4 {
     gap: 34px;
   }
 
+  .site-footer__inner {
+    gap: 30px;
+  }
+
   .cases__grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 680px) {
+  main {
+    padding-bottom: 56px;
+  }
+
+  .wrap {
+    width: min(100% - 28px, var(--wrap));
+  }
+
+  .site-header__inner {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 10px 14px;
+    height: auto;
+    padding: 12px 0;
+  }
+
+  .brand {
+    flex: 1 1 100%;
+  }
+
   .nav {
     display: none;
+  }
+
+  .site-header__actions {
+    width: 100%;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .site-header__actions .link,
+  .btn {
+    font-size: 0.84rem;
+  }
+
+  .page-head {
+    padding-top: 36px;
+  }
+
+  .newsletter {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 42px;
+  }
+
+  .newsletter__form {
+    width: 100%;
+    flex: 1 1 auto;
+  }
+
+  .filterbar {
+    align-items: stretch;
+    margin-top: 38px;
+  }
+
+  .tabs,
+  .search {
+    width: 100%;
+  }
+
+  .tabs {
+    gap: 8px;
+  }
+
+  .tab {
+    padding-inline: 12px;
   }
 
   .row {
     grid-template-columns: 1fr;
     gap: 5px;
-    padding: 14px 12px;
+    margin-inline: 0;
+    padding: 14px 0;
+    border-radius: 0;
+  }
+
+  .row__meta {
+    min-width: 0;
+    flex-wrap: wrap;
   }
 
   .row__author,
@@ -848,8 +924,39 @@ h4 {
     white-space: normal;
   }
 
-  .newsletter {
-    flex-direction: column;
+  .quote {
+    margin: 64px auto;
+  }
+
+  .cases {
+    margin-top: 56px;
+  }
+
+  .cases__head {
     align-items: flex-start;
+    gap: 10px;
+    flex-direction: column;
+  }
+
+  .cases__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .site-footer__inner,
+  .site-footer__cols,
+  .site-footer__bar {
+    flex-direction: column;
+  }
+
+  .site-footer__inner {
+    padding: 40px 0 28px;
+  }
+
+  .site-footer__brand {
+    max-width: none;
+  }
+
+  .site-footer__cols {
+    gap: 26px;
   }
 }

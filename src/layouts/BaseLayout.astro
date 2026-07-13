@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import BrandLogo from '@/components/BrandLogo.astro';
 import { SITE } from '@/utils/posts';
 
 interface Props {
@@ -34,7 +35,7 @@ const href = (path: string) => `${base}${path.replace(/^\/+/, '')}`;
     <header class="site-header">
       <div class="wrap site-header__inner">
         <a class="brand" href={base}>
-          <span class="brand__mark" aria-hidden="true"></span>
+          <BrandLogo />
           <span>{SITE.title}</span>
         </a>
         <nav class="nav" aria-label="主导航">
@@ -57,7 +58,7 @@ const href = (path: string) => `${base}${path.replace(/^\/+/, '')}`;
       <div class="wrap site-footer__inner">
         <div class="site-footer__brand">
           <a class="brand" href={base}>
-            <span class="brand__mark" aria-hidden="true"></span>
+            <BrandLogo />
             <span>{SITE.title}</span>
           </a>
           <p>{SITE.description}</p>
@@ -76,8 +77,8 @@ const href = (path: string) => `${base}${path.replace(/^\/+/, '')}`;
           </div>
           <div>
             <h4>说明</h4>
-            <span class="muted">主题布局参考 Cursor 博客</span>
-            <span class="muted">仅用于学习参考</span>
+            <span class="muted">独立研究与写作</span>
+            <span class="muted">持续记录智能体实践</span>
           </div>
         </div>
       </div>

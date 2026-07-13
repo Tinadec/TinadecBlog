@@ -9,7 +9,7 @@ featured: true
 draft: false
 ---
 
-这是第一篇示例文章。这个博客用 [Astro](https://astro.build) 搭建，主题的排版和布局参考了 Cursor 博客的结构，仅用于学习参考。
+这是第一篇示例文章。这个博客用 [Astro](https://astro.build) 搭建，主题采用简洁的文章与研究笔记布局。
 
 你可以在 `src/content/blog/` 目录下继续新增 Markdown 文件，每篇文章都需要 frontmatter：
 
